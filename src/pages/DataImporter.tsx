@@ -8,7 +8,7 @@ export default function DataImporter() {
   const { imports, loading, refresh } = useSheetImports()
   const [preview, setPreview] = useState<{ name: string; headers: string[]; rows: Record<string, string>[] } | null>(null)
   const [saving, setSaving] = useState(false)
-  const [selectedImport, setSelectedImport] = useState<string | null>(null)
+  const [selectedImport, setSelectedImport] = useState<number | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
