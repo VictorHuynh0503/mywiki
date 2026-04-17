@@ -49,7 +49,7 @@ export default function DataImporter() {
     refresh()
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (!confirm('Delete this import?')) return
     await deleteSheetImport(id)
     if (selectedImport === id) setSelectedImport(null)

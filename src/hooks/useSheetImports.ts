@@ -51,6 +51,6 @@ export async function saveSheetImport(payload: Omit<SheetImport, 'id' | 'importe
     .single()
 }
 
-export async function deleteSheetImport(id: string) {
+export async function deleteSheetImport(id: number) {
   return supabase.from('sheet_imports').delete().eq('id', id)
 }
