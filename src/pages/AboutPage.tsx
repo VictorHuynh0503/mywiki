@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import iconImg from '../assets/icon.png?url'
 
 export default function AboutPage() {
   const navigate = useNavigate()
@@ -16,7 +15,7 @@ export default function AboutPage() {
       <div className="about-container">
         <div className="about-hero">
           <div className="about-avatar-icon">
-            <img src={iconImg} alt="MyWiki" />
+            <img src="/icon.png" alt="MyWiki" />
           </div>
           <h1 className="about-title">About MyWiki</h1>
           <p className="about-subtitle">A modern wiki and article management system</p>

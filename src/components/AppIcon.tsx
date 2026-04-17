@@ -1,5 +1,3 @@
-import iconImg from '../assets/icon.png?url'
-
 interface IconProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   rounded?: boolean
@@ -25,7 +23,7 @@ export function AppIcon({ size = 'md', rounded = true, shadow = false, className
         height: `${px}px`,
       }}
     >
-      <img src={iconImg} alt="MyWiki" />
+      <img src="/icon.png" alt="MyWiki" />
     </div>
   )
 }

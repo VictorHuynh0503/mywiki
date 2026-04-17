@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import iconImg from '../assets/icon.png?url'
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login')
@@ -45,7 +44,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="auth-logo">
           <div className="auth-logo-icon">
-            <img src={iconImg} alt="MyWiki" style={{ width: '100%', height: '100%' }} />
+            <img src="/icon.png" alt="MyWiki" style={{ width: '100%', height: '100%' }} />
           </div>
           <span className="auth-logo-text">MyWiki</span>
         </div>

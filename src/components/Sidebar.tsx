@@ -5,7 +5,6 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { useSettings } from '../lib/SettingsContext'
-import iconImg from '../assets/icon.png?url'
 
 export default function Sidebar() {
   const { pathname } = useLocation()
@@ -28,7 +27,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <img src={iconImg} alt="MyWiki" className="sidebar-logo-img" />
+        <img src="/icon.png" alt="MyWiki" className="sidebar-logo-img" />
         <span>MyWiki</span>
         <button 
           className="theme-toggle-icon"
