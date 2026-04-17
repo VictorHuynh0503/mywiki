@@ -3,4 +3,11 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    middlewareMode: false,
+    hmr: true,
+  },
+  define: {
+    'process.env': process.env,
+  },
 })

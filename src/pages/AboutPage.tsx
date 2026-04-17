@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import iconImg from '../assets/icon.png'
+import iconImg from '../assets/icon.png?url'
 
 export default function AboutPage() {
   const navigate = useNavigate()

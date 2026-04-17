@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { useSettings } from '../lib/SettingsContext'
-import iconImg from '../assets/icon.png'
+import iconImg from '../assets/icon.png?url'
 
 export default function Sidebar() {
   const { pathname } = useLocation()

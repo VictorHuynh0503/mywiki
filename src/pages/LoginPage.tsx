@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import iconImg from '../assets/icon.png'
+import iconImg from '../assets/icon.png?url'
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login')

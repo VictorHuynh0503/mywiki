@@ -1,4 +1,4 @@
-import iconImg from '../assets/icon.png'
+import iconImg from '../assets/icon.png?url'
 
 interface IconProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
