@@ -1,0 +1,36 @@
+{
+  "name": "MyWiki",
+  "short_name": "MyWiki",
+  "description": "A modern article and content management system",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0052cc",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/src/assets/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/src/assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/src/assets/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "colors": [
+    {
+      "space": "srgb",
+      "value": "#0052cc"
+    }
+  ]
+}
