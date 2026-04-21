@@ -1,6 +1,30 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
-import type { Article } from '../types'
+import type { Article, UserAction } from '../types'
+
+// Track user actions
+export async function trackUserAction(
+  action: UserAction['action'],
+  page: string,
+  articleId?: number,
+  metadata?: Record<string, any>
+) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    await supabase.from('user_actions').insert({
+      user_id: user.id,
+      action,
+      page,
+      article_id: articleId || null,
+      metadata: metadata || null,
+      created_at: new Date().toISOString(),
+    })
+  } catch (err) {
+    console.warn('Failed to track action:', err)
+  }
+}
 
 function isTableMissingError(error: { message?: string; code?: string } | null) {
   if (!error) return false
@@ -50,16 +74,38 @@ export function useArticles() {
 
 export function useArticle(id: number | undefined) {
   const [article, setArticle] = useState<Article | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!!id) // Only loading if we have an id
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!id) { setLoading(false); return }
-    supabase.from('articles').select('*').eq('id', id).single().then(({ data, error }) => {
-      if (error) setError(error.message)
-      else setArticle(data as Article)
+    if (!id) { 
       setLoading(false)
-    })
+      setArticle(null)
+      return 
+    }
+    
+    setLoading(true)
+    setError(null)
+    
+    supabase
+      .from('articles')
+      .select('*')
+      .eq('id', id)
+      .single()
+      .then(({ data, error }) => {
+        if (error) {
+          setError(error.message)
+          setArticle(null)
+        } else {
+          setArticle(data as Article)
+          setError(null)
+        }
+        setLoading(false)
+      })
+      .catch((err) => {
+        setError(err.message)
+        setLoading(false)
+      })
   }, [id])
 
   return { article, loading, error }

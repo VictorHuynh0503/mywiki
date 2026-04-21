@@ -1,12 +1,20 @@
+import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Edit } from 'lucide-react'
-import { useArticle } from '../hooks/useArticles'
+import { useArticle, trackUserAction } from '../hooks/useArticles'
 
 export default function ArticleView() {
   const { id: idParam } = useParams<{ id: string }>()
   const id = idParam ? parseInt(idParam) : undefined
   const { article, loading, error } = useArticle(id)
   const navigate = useNavigate()
+
+  // Track view action when article loads
+  useEffect(() => {
+    if (article && id) {
+      trackUserAction('view_article', '/articles/view', id)
+    }
+  }, [article, id])
 
   if (loading) {
     return <div className="page-loading">Loading…</div>

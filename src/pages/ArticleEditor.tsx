@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Save, Eye, EyeOff, ArrowLeft, Upload, Tag, X, BookOpen } from 'lucide-react'
 import RichEditor from '../components/RichEditor'
-import { useArticle, saveArticle, uploadImage } from '../hooks/useArticles'
+import { useArticle, saveArticle, uploadImage, trackUserAction } from '../hooks/useArticles'
 
 export default function ArticleEditor() {
   const { id: idParam } = useParams<{ id: string }>()
@@ -21,6 +21,14 @@ export default function ArticleEditor() {
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState('')
 
+  // Track edit action when component mounts or article loads
+  useEffect(() => {
+    if (!isNew && article && id) {
+      trackUserAction('edit_article', '/articles/edit', id)
+    }
+  }, [isNew, article, id])
+
+  // Load article data when it arrives
   useEffect(() => {
     if (article) {
       setTitle(article.title)

@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
+import { usePageTracking } from '../hooks/usePageTracking'
 
 export default function AboutPage() {
+  usePageTracking('/about')
   const navigate = useNavigate()
 
   return (

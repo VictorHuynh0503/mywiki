@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   FileText, Database, Plus,
-  ChevronRight, LayoutDashboard, Settings2, LogOut, AlertCircle, Moon, Sun, Info
+  ChevronRight, LayoutDashboard, Settings2, LogOut, Info
 } from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { useSettings } from '../lib/SettingsContext'
@@ -64,11 +64,6 @@ export default function Sidebar() {
         </Link>
 
         <div className="nav-section-label">Admin</div>
-
-        <Link to="/db-setup" className={`nav-item ${active('/db-setup') ? 'active' : ''}`}>
-          <AlertCircle size={16} />
-          <span>DB Setup</span>
-        </Link>
 
         <Link to="/settings" className={`nav-item ${active('/settings') ? 'active' : ''}`}>
           <Settings2 size={16} />

@@ -8,6 +8,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null)
 
+  // Get the redirect URL from environment variable or use current origin
+  const redirectUrl = import.meta.env.VITE_REDIRECT_URL || window.location.origin
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -15,7 +18,13 @@ export default function LoginPage() {
 
     if (mode === 'login') {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) setMessage({ type: 'error', text: error.message })
+      if (error) {
+        setMessage({ type: 'error', text: error.message })
+        setLoading(false)
+      } else {
+        // Login successful - redirect will be handled by AuthContext
+        setMessage({ type: 'success', text: 'Login successful! Redirecting...' })
+      }
 
     } else if (mode === 'register') {
       if (password.length < 6) {
@@ -23,16 +32,35 @@ export default function LoginPage() {
         setLoading(false)
         return
       }
-      const { error } = await supabase.auth.signUp({ email, password })
-      if (error) setMessage({ type: 'error', text: error.message })
-      else setMessage({ type: 'success', text: 'Account created! Check your email to confirm, then log in.' })
+      const { error, data } = await supabase.auth.signUp({ email, password })
+      if (error) {
+        setMessage({ type: 'error', text: error.message })
+        setLoading(false)
+      } else {
+        setMessage({ 
+          type: 'success', 
+          text: data?.user?.email_confirmed 
+            ? '✓ Account created successfully! Redirecting...' 
+            : '✓ Account created! Please check your email to confirm, then sign in.'
+        })
+        // If email is confirmed, redirect after a short delay
+        if (data?.user?.email_confirmed) {
+          setTimeout(() => {
+            window.location.href = redirectUrl
+          }, 1500)
+        }
+      }
 
     } else if (mode === 'reset') {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin,
+        redirectTo: redirectUrl,
       })
-      if (error) setMessage({ type: 'error', text: error.message })
-      else setMessage({ type: 'success', text: 'Password reset email sent! Check your inbox.' })
+      if (error) {
+        setMessage({ type: 'error', text: error.message })
+        setLoading(false)
+      } else {
+        setMessage({ type: 'success', text: '✓ Password reset email sent! Check your inbox.' })
+      }
     }
 
     setLoading(false)

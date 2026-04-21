@@ -2,9 +2,11 @@ import { useState, useRef } from 'react'
 import { Upload, Trash2, Table, CheckCircle } from 'lucide-react'
 import Papa from 'papaparse'
 import * as XLSX from 'xlsx'
+import { usePageTracking } from '../hooks/usePageTracking'
 import { useSheetImports, saveSheetImport, deleteSheetImport } from '../hooks/useSheetImports'
 
 export default function DataImporter() {
+  usePageTracking('/data')
   const { imports, loading, refresh } = useSheetImports()
   const [preview, setPreview] = useState<{ name: string; headers: string[]; rows: Record<string, string>[] } | null>(null)
   const [saving, setSaving] = useState(false)

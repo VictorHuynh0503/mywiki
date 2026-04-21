@@ -1,7 +1,9 @@
 import { useSettings } from '../lib/SettingsContext'
+import { usePageTracking } from '../hooks/usePageTracking'
 import { Settings, RotateCcw } from 'lucide-react'
 
 export default function SettingsPage() {
+  usePageTracking('/settings')
   const { settings, updateSetting, resetSettings } = useSettings()
 
   const confirmReset = () => {

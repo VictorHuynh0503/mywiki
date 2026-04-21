@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
@@ -34,6 +35,13 @@ export default function RichEditor({ content, onChange }: Props) {
       onChange(editor.getHTML())
     },
   })
+
+  // Update editor content when the content prop changes (e.g., when loading an article for editing)
+  useEffect(() => {
+    if (editor && content) {
+      editor.commands.setContent(content)
+    }
+  }, [content, editor])
 
   if (!editor) return null
 

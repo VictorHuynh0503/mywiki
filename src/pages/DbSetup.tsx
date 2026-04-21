@@ -10,14 +10,25 @@ interface TableStatus {
 
 export default function DbSetup() {
   const [tables, setTables] = useState<TableStatus[]>([
+    { name: 'user_profiles', exists: null, checking: false },
     { name: 'articles', exists: null, checking: false },
     { name: 'sheet_imports', exists: null, checking: false },
+    { name: 'user_actions', exists: null, checking: false },
   ])
   const [checking, setChecking] = useState(false)
   const [sqlCopied, setSqlCopied] = useState(false)
 
   const SQL_SCHEMA = `-- Run this in your Supabase SQL Editor
 -- Go to: https://supabase.com/dashboard → your project → SQL Editor
+
+CREATE TABLE IF NOT EXISTS public.user_profiles (
+  id          UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email       TEXT NOT NULL UNIQUE,
+  full_name   TEXT,
+  avatar_url  TEXT,
+  created_at  TIMESTAMPTZ DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ DEFAULT NOW()
+);
 
 CREATE TABLE IF NOT EXISTS public.articles (
   id          BIGSERIAL PRIMARY KEY,
@@ -42,11 +53,27 @@ CREATE TABLE IF NOT EXISTS public.sheet_imports (
   imported_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS public.user_actions (
+  id          BIGSERIAL PRIMARY KEY,
+  user_id     UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  action      TEXT NOT NULL,
+  page        TEXT NOT NULL,
+  article_id  BIGINT REFERENCES public.articles(id) ON DELETE SET NULL,
+  metadata    JSONB,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Enable Row Level Security
+ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.articles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sheet_imports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_actions ENABLE ROW LEVEL SECURITY;
 
 -- Policies: users can only see/edit their own data
+CREATE POLICY "profiles_select" ON public.user_profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "profiles_insert" ON public.user_profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "profiles_update" ON public.user_profiles FOR UPDATE USING (auth.uid() = id);
+
 CREATE POLICY "articles_select" ON public.articles FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "articles_insert" ON public.articles FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "articles_update" ON public.articles FOR UPDATE USING (auth.uid() = user_id);
@@ -55,7 +82,11 @@ CREATE POLICY "articles_delete" ON public.articles FOR DELETE USING (auth.uid() 
 CREATE POLICY "imports_select" ON public.sheet_imports FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "imports_insert" ON public.sheet_imports FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "imports_update" ON public.sheet_imports FOR UPDATE USING (auth.uid() = user_id);
-CREATE POLICY "imports_delete" ON public.sheet_imports FOR DELETE USING (auth.uid() = user_id);`
+CREATE POLICY "imports_delete" ON public.sheet_imports FOR DELETE USING (auth.uid() = user_id);
+
+-- Policies for user_actions: users can see their own actions, insert their own actions
+CREATE POLICY "actions_select" ON public.user_actions FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "actions_insert" ON public.user_actions FOR INSERT WITH CHECK (auth.uid() = user_id);`
 
   const checkTables = async () => {
     setChecking(true)

@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { FileText, Database, Plus, ArrowRight, AlertTriangle } from 'lucide-react'
 import { useArticles } from '../hooks/useArticles'
+import { usePageTracking } from '../hooks/usePageTracking'
 import { AppIcon } from '../components/AppIcon'
 
 export default function Dashboard() {
+  usePageTracking('/dashboard')
   const { articles, loading, tableMissing } = useArticles()
   const published = articles.filter(a => a.status === 'published')
   const drafts = articles.filter(a => a.status === 'draft')

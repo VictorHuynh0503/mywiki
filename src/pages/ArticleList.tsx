@@ -1,12 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Plus, Search, Trash2, Edit, Eye } from 'lucide-react'
-import { useArticles, deleteArticle } from '../hooks/useArticles'
+import { useArticles, deleteArticle, trackUserAction } from '../hooks/useArticles'
 
 export default function ArticleList() {
   const { articles, loading, refresh } = useArticles()
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
+
+  // Track page view
+  useEffect(() => {
+    trackUserAction('view_page', '/articles')
+  }, [])
 
   const filtered = articles.filter(a =>
     a.title.toLowerCase().includes(query.toLowerCase()) ||
