@@ -87,12 +87,14 @@ export function useArticle(id: number | undefined) {
     setLoading(true)
     setError(null)
     
-    supabase
-      .from('articles')
-      .select('*')
-      .eq('id', id)
-      .single()
-      .then(({ data, error }) => {
+    const fetchArticle = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('id', id)
+          .single()
+        
         if (error) {
           setError(error.message)
           setArticle(null)
@@ -100,12 +102,14 @@ export function useArticle(id: number | undefined) {
           setArticle(data as Article)
           setError(null)
         }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
         setLoading(false)
-      })
-      .catch((err: Error) => {
-        setError(err.message)
-        setLoading(false)
-      })
+      }
+    }
+    
+    fetchArticle()
   }, [id])
 
   return { article, loading, error }
@@ -124,7 +128,7 @@ export async function saveArticle(article: Partial<Article> & { id?: string | nu
     return { data, error }
   } else {
     // Create new article - omit ID to let database auto-generate it
-    const { title, content, excerpt, cover_url, tags, status } = article
+    const { title, content, excerpt, cover_url, tags, status, publish_type } = article
     const { data, error } = await supabase
       .from('articles')
       .insert([{ 
@@ -134,6 +138,7 @@ export async function saveArticle(article: Partial<Article> & { id?: string | nu
         cover_url,
         tags,
         status,
+        publish_type: publish_type || 'local',
         user_id: user?.id 
       }])
       .select()

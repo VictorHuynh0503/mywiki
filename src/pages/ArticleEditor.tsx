@@ -18,6 +18,7 @@ export default function ArticleEditor() {
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
   const [status, setStatus] = useState<'draft' | 'published'>('draft')
+  const [publishType, setPublishType] = useState<'local' | 'community'>('local')
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState('')
 
@@ -37,6 +38,7 @@ export default function ArticleEditor() {
       setCoverUrl(article.cover_url ?? '')
       setTags(article.tags)
       setStatus(article.status)
+      setPublishType(article.publish_type)
     }
   }, [article])
 
@@ -45,7 +47,7 @@ export default function ArticleEditor() {
     const s = newStatus ?? status
     const { data, error } = await saveArticle({
       id: isNew ? undefined : id,
-      title, content, excerpt, cover_url: coverUrl, tags, status: s
+      title, content, excerpt, cover_url: coverUrl, tags, status: s, publish_type: publishType
     })
     setSaving(false)
     if (error) { setSaveMsg('Error: ' + error.message); return }
@@ -168,6 +170,23 @@ export default function ArticleEditor() {
               <option value="draft">Draft</option>
               <option value="published">Published</option>
             </select>
+          </div>
+
+          <div className="meta-section">
+            <label className="meta-label">Visibility</label>
+            <select
+              className="meta-select"
+              value={publishType}
+              onChange={e => setPublishType(e.target.value as 'local' | 'community')}
+            >
+              <option value="local">Local (Only me)</option>
+              <option value="community">Community (Everyone)</option>
+            </select>
+            <p className="meta-hint">
+              {publishType === 'community' 
+                ? 'This article is visible to all registered users' 
+                : 'This article is only visible to you'}
+            </p>
           </div>
         </div>
       </div>

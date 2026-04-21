@@ -6,6 +6,7 @@ export interface Article {
   cover_url: string | null
   tags: string[]
   status: 'draft' | 'published'
+  publish_type: 'local' | 'community'
   created_at: string
   updated_at: string
 }

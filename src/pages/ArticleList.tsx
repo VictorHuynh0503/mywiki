@@ -75,6 +75,9 @@ export default function ArticleList() {
               <div className="article-card-body">
                 <div className="article-card-top">
                   <span className={`status-badge ${a.status}`}>{a.status}</span>
+                  <span className={`visibility-badge ${a.publish_type}`}>
+                    {a.publish_type === 'community' ? '🌍 Community' : '🔒 Local'}
+                  </span>
                   <span className="article-date">{new Date(a.updated_at).toLocaleDateString()}</span>
                 </div>
                 <h3 className="article-card-title">{a.title || 'Untitled'}</h3>
