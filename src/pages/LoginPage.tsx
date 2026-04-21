@@ -39,12 +39,12 @@ export default function LoginPage() {
       } else {
         setMessage({ 
           type: 'success', 
-          text: data?.user?.email_confirmed 
+          text: data?.user?.email_confirmed_at 
             ? '✓ Account created successfully! Redirecting...' 
             : '✓ Account created! Please check your email to confirm, then sign in.'
         })
         // If email is confirmed, redirect after a short delay
-        if (data?.user?.email_confirmed) {
+        if (data?.user?.email_confirmed_at) {
           setTimeout(() => {
             window.location.href = redirectUrl
           }, 1500)

@@ -102,7 +102,7 @@ export function useArticle(id: number | undefined) {
         }
         setLoading(false)
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         setError(err.message)
         setLoading(false)
       })
