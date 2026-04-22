@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { getResetPasswordRedirectUrl, logAuthConfig } from '../lib/authConfig'
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login')
@@ -8,8 +9,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null)
 
-  // Get the redirect URL from environment variable or use current origin
-  const redirectUrl = import.meta.env.VITE_REDIRECT_URL || window.location.origin
+  // Log auth config on mount for debugging
+  useEffect(() => {
+    logAuthConfig()
+  }, [])
+
+  // Get the redirect URL - auto-detects from current domain
+  const redirectUrl = getResetPasswordRedirectUrl()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -9,6 +9,8 @@ import ArticleEditor from './pages/ArticleEditor'
 import ArticleView from './pages/ArticleView'
 import DataImporter from './pages/DataImporter'
 import LoginPage from './pages/LoginPage'
+import AuthCallback from './pages/AuthCallback'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import DbSetup from './pages/DbSetup'
 import AboutPage from './pages/AboutPage'
 import SettingsPage from './pages/SettingsPage'
@@ -65,6 +67,8 @@ export default function App() {
           <ThemeProvider>
             <Routes>
               <Route path="/login" element={<AuthRoute />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/*" element={<ProtectedLayout />} />
             </Routes>
           </ThemeProvider>
