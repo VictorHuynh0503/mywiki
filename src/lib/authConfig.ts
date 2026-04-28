@@ -69,13 +69,24 @@ export function isDevelopment(): boolean {
  * Log environment info for debugging
  */
 export function logAuthConfig(): void {
-  if (isDevelopment()) {
-    console.log('[Auth Config]', {
-      environment: 'development',
-      baseUrl: getBaseUrl(),
-      resetPasswordUrl: getResetPasswordRedirectUrl(),
-      currentOrigin: window.location.origin,
-      envViteRedirectUrl: import.meta.env.VITE_REDIRECT_URL || 'not set',
-    })
+  const config = {
+    environment: isDevelopment() ? 'development' : 'production',
+    baseUrl: getBaseUrl(),
+    resetPasswordUrl: getResetPasswordRedirectUrl(),
+    currentOrigin: window.location.origin,
+    envViteRedirectUrl: import.meta.env.VITE_REDIRECT_URL || 'not set (auto-detecting)',
+    hostname: window.location.hostname,
+  }
+  
+  console.log('[Auth Config]', config)
+  
+  // Production warning
+  if (!isDevelopment() && !import.meta.env.VITE_REDIRECT_URL) {
+    console.info(
+      '[Auth Config] 🌐 Using auto-detected domain for Vercel deployment:\n' +
+      'Make sure this domain is added to Supabase URL Configuration:\n' +
+      'Supabase → Authentication → URL Configuration → Redirect URLs\n' +
+      'Add: ' + config.resetPasswordUrl
+    )
   }
 }
