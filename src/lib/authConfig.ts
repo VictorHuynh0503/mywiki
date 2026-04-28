@@ -13,6 +13,32 @@
  */
 
 /**
+ * Get the redirect URL for email confirmation (signup confirmation)
+ * 
+ * Priority:
+ * 1. If VITE_REDIRECT_URL is set in .env → use it (replace /reset-password with /auth-callback)
+ * 2. Otherwise → auto-detect from current domain + /auth-callback
+ * 
+ * Examples:
+ * - Local: https://localhost:5173/auth-callback
+ * - Vercel: https://my-app.vercel.app/auth-callback
+ * - Custom: https://myapp.com/auth-callback
+ */
+export function getEmailConfirmationRedirectUrl(): string {
+  const envUrl = import.meta.env.VITE_REDIRECT_URL
+
+  // If explicitly set in .env, adapt it to auth-callback
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim()) {
+    // Replace /reset-password with /auth-callback
+    return envUrl.replace('/reset-password', '/auth-callback')
+  }
+
+  // Auto-detect: Use current domain + /auth-callback
+  const baseUrl = window.location.origin
+  return `${baseUrl}/auth-callback`
+}
+
+/**
  * Get the redirect URL for password reset emails
  * 
  * Priority:
@@ -72,6 +98,7 @@ export function logAuthConfig(): void {
   const config = {
     environment: isDevelopment() ? 'development' : 'production',
     baseUrl: getBaseUrl(),
+    emailConfirmationUrl: getEmailConfirmationRedirectUrl(),
     resetPasswordUrl: getResetPasswordRedirectUrl(),
     currentOrigin: window.location.origin,
     envViteRedirectUrl: import.meta.env.VITE_REDIRECT_URL || 'not set (auto-detecting)',
@@ -84,9 +111,11 @@ export function logAuthConfig(): void {
   if (!isDevelopment() && !import.meta.env.VITE_REDIRECT_URL) {
     console.info(
       '[Auth Config] 🌐 Using auto-detected domain for Vercel deployment:\n' +
-      'Make sure this domain is added to Supabase URL Configuration:\n' +
+      'Make sure these domains are added to Supabase URL Configuration:\n' +
       'Supabase → Authentication → URL Configuration → Redirect URLs\n' +
-      'Add: ' + config.resetPasswordUrl
+      'Add:\n' +
+      '  - ' + config.emailConfirmationUrl + '\n' +
+      '  - ' + config.resetPasswordUrl
     )
   }
 }

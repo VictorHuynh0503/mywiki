@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { getResetPasswordRedirectUrl, logAuthConfig } from '../lib/authConfig'
+import { getResetPasswordRedirectUrl, getEmailConfirmationRedirectUrl, logAuthConfig } from '../lib/authConfig'
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login')
@@ -38,7 +38,13 @@ export default function LoginPage() {
         setLoading(false)
         return
       }
-      const { error, data } = await supabase.auth.signUp({ email, password })
+      const { error, data } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          emailRedirectTo: getEmailConfirmationRedirectUrl(),
+        }
+      })
       if (error) {
         setMessage({ type: 'error', text: error.message })
         setLoading(false)
@@ -52,7 +58,7 @@ export default function LoginPage() {
         // If email is confirmed, redirect after a short delay
         if (data?.user?.email_confirmed_at) {
           setTimeout(() => {
-            window.location.href = redirectUrl
+            window.location.href = getEmailConfirmationRedirectUrl()
           }, 1500)
         }
       }
